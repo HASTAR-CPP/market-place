@@ -1,0 +1,339 @@
+@import url('https://fonts.googleapis.com/css2?family=Architects+Daughter&display=swap');
+
+:root {
+    --bg-base: #FFFFFF;
+    --text-main: #000000;
+    --text-muted: #333333;
+
+    --border-width: 3px;
+    --border-color: #000000;
+
+    /* Handwriting Font to simulate sketch */
+    --font-main: 'Architects Daughter', cursive, sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-main);
+    background-color: var(--bg-base);
+    color: var(--text-main);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+    position: relative;
+    font-size: 18px;
+}
+
+/* --- Navigation --- */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 6vw;
+    border-bottom: var(--border-width) solid var(--border-color);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--bg-base);
+}
+
+.logo {
+    font-size: 2.5rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--text-main);
+    text-decoration: none;
+    text-transform: uppercase;
+}
+
+.nav-links {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+}
+
+.nav-links a {
+    color: var(--text-main);
+    text-decoration: none;
+    font-size: 1.25rem;
+    display: inline-block;
+}
+
+.nav-links a:hover {
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+}
+
+.separator {
+    color: var(--text-main);
+    user-select: none;
+    font-size: 1.25rem;
+}
+
+/* --- Main Content --- */
+.main-container {
+    flex: 1;
+    padding: 4rem 6vw;
+    display: flex;
+    flex-direction: column;
+    gap: 4rem;
+}
+
+/* --- Cards Grid --- */
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 2.5rem;
+}
+
+/* Sketch Card */
+.product-card {
+    background: var(--bg-base);
+    border: var(--border-width) solid var(--border-color);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    position: relative;
+    /* Irregular border radius to mimic hand-drawn boxes */
+    border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+    z-index: 10;
+}
+
+.card-image {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    border: var(--border-width) solid var(--border-color);
+    /* Make image fit the hand-drawn sketch vibe */
+    filter: grayscale(100%) contrast(1.5) opacity(0.8);
+    border-radius: 15px 255px 15px 225px / 255px 15px 225px 15px;
+}
+
+.card-info {
+    flex: 1;
+}
+
+.card-info h3 {
+    font-size: 1.75rem;
+    color: var(--text-main);
+}
+
+/* Card Actions / Buttons */
+.card-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: auto;
+}
+
+.btn {
+    padding: 0.5rem 1rem;
+    border: var(--border-width) solid var(--border-color);
+    background: var(--bg-base);
+    color: var(--text-main);
+    font-family: inherit;
+    font-size: 1.25rem;
+    cursor: pointer;
+    text-align: center;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: none;
+}
+
+.btn:hover {
+    background: var(--text-main);
+    color: var(--bg-base);
+}
+
+/* Sketch "empty boxes" (like in your Bread Omelette sketch drawing) */
+.btn-spacer {
+    border: var(--border-width) solid var(--border-color);
+    background: transparent;
+    pointer-events: none;
+    visibility: visible;
+}
+
+.btn-spacer::after {
+    content: " ";
+}
+
+/* --- Bottom Section --- */
+.bottom-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: auto;
+    padding-bottom: 2rem;
+}
+
+.btn-proceed {
+    font-size: 1.5rem;
+    font-weight: 600;
+    padding: 0.75rem 2.5rem;
+    border: var(--border-width) solid var(--border-color);
+    background: var(--bg-base);
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    cursor: pointer;
+}
+
+/* --- Checkout Layout (Page 2) --- */
+.checkout-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 2.5rem;
+}
+
+.cart-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+    border-bottom: var(--border-width) solid var(--border-color);
+    padding-bottom: 1rem;
+    color: var(--text-main);
+}
+
+.cart-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    align-items: center;
+}
+
+.price-breakdown {
+    border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+}
+
+.price-breakdown h3 {
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.breakdown-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+    font-size: 1.25rem;
+    color: var(--text-main);
+}
+
+.divider {
+    border: none;
+    height: var(--border-width);
+    background: var(--border-color);
+    margin: 2rem 0;
+}
+
+.breakdown-total {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 1.5rem;
+}
+
+.total-box {
+    border: var(--border-width) solid var(--border-color);
+    padding: 0.5rem 1.5rem;
+    background: var(--bg-base);
+}
+
+/* --- Modal (Payment Popup) --- */
+.payment-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.95);
+    z-index: 1000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+}
+
+.payment-modal.active {
+    display: flex;
+}
+
+.payment-modal .modal-content {
+    max-width: 600px;
+    width: 100%;
+}
+
+.close-modal {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    background: none;
+    border: none;
+    color: var(--text-main);
+    font-size: 2.5rem;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.payment-option {
+    margin: 1.5rem 0;
+    padding: 1rem;
+}
+
+.payment-option h4 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.payment-option p {
+    color: var(--text-main);
+    font-size: 1.25rem;
+    padding-left: 1.5rem;
+    line-height: 1.5;
+}
+
+.highlight {
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+}
+
+/* --- Support styles for success page --- */
+.center-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.wait-text {
+    font-size: clamp(2rem, 5vw, 4rem);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1rem 5vw;
+    }
+
+    .bottom-actions {
+        justify-content: center;
+    }
+
+    .btn-proceed {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .checkout-grid {
+        grid-template-columns: 1fr;
+    }
+}

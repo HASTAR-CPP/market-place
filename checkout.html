@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SHUNYA. - Checkout</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+    <!-- Top Navigation -->
+    <nav class="navbar">
+        <a href="index.html" class="logo">SHUNYA.</a>
+        <div class="nav-links">
+            <a href="#">About us</a>
+            <span class="separator">|</span>
+            <a href="#">Contact us</a>
+        </div>
+    </nav>
+
+    <main class="main-container">
+
+        <div class="checkout-grid">
+
+            <!-- Left Side: Items & Quantities -->
+            <div class="product-card">
+                <div class="cart-header">
+                    <span>Item</span>
+                    <span>Quantity</span>
+                </div>
+
+                <div class="cart-row">
+                    <span class="item-name">1. Maggi</span>
+                    <span class="item-qty">2</span>
+                </div>
+
+                <div class="cart-row">
+                    <span class="item-name">2. Omelette</span>
+                    <span class="item-qty">1</span>
+                </div>
+
+                <div class="cart-row" style="color: var(--text-muted);">
+                    <span class="item-name">3. ...</span>
+                    <span class="item-qty">n</span>
+                </div>
+
+            </div>
+
+            <!-- Right Side: Price Breakdown -->
+            <div class="product-card price-breakdown">
+                <h3>Price breakdown-</h3>
+
+                <div class="breakdown-row">
+                    <span>Delivery charges.</span>
+                    <span>- ₹20</span>
+                </div>
+
+                <div class="breakdown-row">
+                    <span>product charges.</span>
+                    <span>- ₹14</span>
+                </div>
+
+                <div class="breakdown-row">
+                    <span>labour cost.</span>
+                    <span>- ₹220</span>
+                </div>
+
+                <hr class="divider">
+
+                <div class="breakdown-total">
+                    <span>total =</span>
+                    <div style="display: flex; gap: 1rem; align-items: center;">
+                        <span class="total-box">₹254</span>
+                        <button class="btn btn-proceed" id="pay-btn"
+                            style="padding: 0.75rem 2rem; font-size: 1.1rem;">Pay</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Modal for Payment Options -->
+    <div class="payment-modal" id="payment-modal">
+        <div class="product-card modal-content">
+            <button class="close-modal">&times;</button>
+            <h2 style="margin-bottom: 1rem;">SHUNYA.</h2>
+
+            <div class="payment-option">
+                <h4>• Pay ONLINE</h4>
+                <p>pay on <span class="highlight">9310181962@ybl</span>.</p>
+            </div>
+
+            <hr class="divider" style="margin: 0.5rem 0;">
+
+            <div class="payment-option">
+                <h4>• COD</h4>
+                <p>confirmation call required.<br>Please call <span class="highlight">8440975794</span>.</p>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; margin-top: 1rem;">
+                <button class="btn btn-proceed" id="confirm-pay"
+                    style="padding: 0.75rem 2.5rem; font-size: 1.1rem;">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Interactivity -->
+    <script src="script.js"></script>
+</body>
+
+</html>

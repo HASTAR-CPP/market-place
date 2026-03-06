@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SHUNYA.</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+    <!-- Top Navigation -->
+    <nav class="navbar">
+        <a href="#" class="logo">SHUNYA.</a>
+        <div class="nav-links">
+            <a href="#">About us</a>
+            <span class="separator">|</span>
+            <a href="#">Contact us</a>
+        </div>
+    </nav>
+
+    <main class="main-container">
+
+        <!-- Cards Flex/Grid Section -->
+        <div class="cards-grid">
+
+            <!-- Card 1 -->
+            <div class="product-card">
+                <img src="https://images.unsplash.com/photo-1612929633738-8fe44f7ec841?q=80&w=800&auto=format&fit=crop"
+                    alt="Maggi" class="card-image">
+                <div class="card-info">
+                    <h3>Maggi</h3>
+                </div>
+                <div class="card-actions">
+                    <button class="btn btn-outline">Custo</button>
+                    <button class="btn btn-primary">Add</button>
+                </div>
+            </div>
+
+            <!-- Card 2 -->
+            <div class="product-card">
+                <img src="https://images.unsplash.com/photo-1525351484163-c5290fd85d13?q=80&w=800&auto=format&fit=crop"
+                    alt="Sunny Side Up" class="card-image">
+                <div class="card-info">
+                    <h3>Sunny side up</h3>
+                </div>
+                <!-- Replicating sketch: empty box + 'add' -->
+                <div class="card-actions">
+                    <div class="btn btn-outline btn-spacer"></div>
+                    <button class="btn btn-primary">Add</button>
+                </div>
+            </div>
+
+            <!-- Card 3 -->
+            <div class="product-card">
+                <img src="https://images.unsplash.com/photo-1481070555726-e2fe8357725c?q=80&w=800&auto=format&fit=crop"
+                    alt="Bread Omelette" class="card-image">
+                <div class="card-info">
+                    <h3>Bread omelette</h3>
+                </div>
+                <!-- Replicating sketch: two empty boxes -->
+                <div class="card-actions">
+                    <div class="btn btn-outline btn-spacer"></div>
+                    <div class="btn btn-primary btn-spacer"></div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Float Right Proceed Button -->
+        <div class="bottom-actions">
+            <button class="btn btn-proceed">
+                Proceed <i class="ph-bold ph-arrow-right"></i>
+            </button>
+        </div>
+
+    </main>
+
+    <!-- Custom Interactivity -->
+    <script src="script.js"></script>
+</body>
+
+</html>

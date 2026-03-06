@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SHUNYA. - Processing</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+    <!-- Top Navigation -->
+    <nav class="navbar">
+        <a href="index.html" class="logo">SHUNYA.</a>
+        <div class="nav-links">
+            <a href="#">About us</a>
+            <span class="separator">|</span>
+            <a href="#">Contact us</a>
+        </div>
+    </nav>
+
+    <main class="main-container center-content" style="min-height: calc(100vh - 120px);">
+        <h1 class="wait-text">WAIT , <span class="highlight pulse-anim">fetching...</span></h1>
+    </main>
+
+    <style>
+        .pulse-anim {
+            animation: pulse 1.5s infinite var(--ease-in-out);
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.4;
+            }
+        }
+    </style>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
