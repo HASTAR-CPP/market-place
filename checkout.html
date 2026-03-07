@@ -24,67 +24,68 @@
     <nav class="navbar">
         <a href="index.html" class="logo">SHUNYA.</a>
         <div class="nav-links">
+            <a href="track.html">Track Order</a>
+            <span class="separator">|</span>
             <a href="#">About us</a>
             <span class="separator">|</span>
             <a href="#">Contact us</a>
         </div>
     </nav>
 
-    <main class="main-container">
+    <main class="main-container" style="padding-top: 2rem; padding-bottom: 2rem; gap: 1rem;">
 
-        <div class="checkout-grid">
+        <div class="checkout-grid" style="gap: 1.5rem;">
 
             <!-- Left Side: Items & Quantities -->
-            <div class="product-card">
-                <div class="cart-header">
-                    <span>Item</span>
-                    <span>Quantity</span>
-                </div>
+            <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                <div class="product-card" style="padding: 1.25rem;">
+                    <h3 style="font-size: 1.25rem; margin-bottom: 1rem;">Delivery Details</h3>
+                    <input type="text" id="cust-name" placeholder="Name" class="input-field"
+                        style="padding: 0.5rem 1rem; margin-bottom: 0.5rem; font-size: 1.1rem;" required>
+                    <input type="text" id="cust-phone" placeholder="Phone Number" class="input-field"
+                        style="padding: 0.5rem 1rem; margin-bottom: 0.5rem; font-size: 1.1rem;" required>
+                    <textarea id="cust-address" placeholder="Delivery Address / Room No." class="input-field" rows="2"
+                        style="padding: 0.5rem 1rem; margin-bottom: 0.5rem; font-size: 1.1rem;" required></textarea>
 
-                <div class="cart-row">
-                    <span class="item-name">1. Maggi</span>
-                    <span class="item-qty">2</span>
+                    <h3 style="font-size: 1.25rem; margin-top: 0.5rem; margin-bottom: 1rem;">Set up tracking</h3>
+                    <input type="text" id="cust-id" placeholder="Choose an ID" class="input-field"
+                        style="padding: 0.5rem 1rem; margin-bottom: 0.5rem; font-size: 1.1rem;" required>
+                    <input type="password" id="cust-pass" placeholder="Choose a Password" class="input-field"
+                        style="padding: 0.5rem 1rem; margin-bottom: 0; font-size: 1.1rem;" required>
                 </div>
-
-                <div class="cart-row">
-                    <span class="item-name">2. Omelette</span>
-                    <span class="item-qty">1</span>
-                </div>
-
-                <div class="cart-row" style="color: var(--text-muted);">
-                    <span class="item-name">3. ...</span>
-                    <span class="item-qty">n</span>
-                </div>
-
             </div>
 
             <!-- Right Side: Price Breakdown -->
-            <div class="product-card price-breakdown">
-                <h3>Price breakdown-</h3>
+            <div class="product-card price-breakdown" style="padding: 1.25rem;">
+                <div class="cart-header" style="margin-bottom: 0.5rem; font-size: 1.25rem; padding-bottom: 0.5rem;">
+                    <span>Item</span>
+                    <span>Quantity</span>
+                </div>
+                <div id="cart-lines-container" style="margin-bottom: 1rem; font-size: 1.25rem;">
+                    <!-- Dynamic cart lines injected here by JS -->
+                </div>
 
-                <div class="breakdown-row">
+                <hr class="divider" style="margin-bottom: 1rem;">
+                <h3 style="font-size: 1.25rem; margin-bottom: 1rem;">Price breakdown-</h3>
+
+                <div class="breakdown-row" style="margin-bottom: 0.5rem; font-size: 1.25rem;">
                     <span>Delivery charges.</span>
-                    <span>- ₹20</span>
+                    <span id="delivery-charge">- ₹20</span>
                 </div>
 
-                <div class="breakdown-row">
+                <div class="breakdown-row" style="margin-bottom: 1rem; font-size: 1.25rem;">
                     <span>product charges.</span>
-                    <span>- ₹14</span>
+                    <span id="product-total">- ₹0</span>
                 </div>
 
-                <div class="breakdown-row">
-                    <span>labour cost.</span>
-                    <span>- ₹220</span>
-                </div>
+                <hr class="divider" style="margin-bottom: 1rem;">
 
-                <hr class="divider">
-
-                <div class="breakdown-total">
+                <div class="breakdown-total" style="font-size: 1.25rem;">
                     <span>total =</span>
                     <div style="display: flex; gap: 1rem; align-items: center;">
-                        <span class="total-box">₹254</span>
+                        <span class="total-box" id="final-total" style="padding: 0.25rem 1rem;">₹0</span>
                         <button class="btn btn-proceed" id="pay-btn"
-                            style="padding: 0.75rem 2rem; font-size: 1.1rem;">Pay</button>
+                            style="padding: 0.5rem 1.5rem; font-size: 1.1rem;">Pay</button>
                     </div>
                 </div>
             </div>
@@ -101,14 +102,14 @@
 
             <div class="payment-option">
                 <h4>• Pay ONLINE</h4>
-                <p>pay on <span class="highlight">9310181962@ybl</span>.</p>
+                <p>pay on <span class="highlight">9310181962@nyes</span>.</p>
             </div>
 
             <hr class="divider" style="margin: 0.5rem 0;">
 
             <div class="payment-option">
                 <h4>• COD</h4>
-                <p>confirmation call required.<br>Please call <span class="highlight">8440975794</span>.</p>
+                <p>confirmation call required.<br>Please call <span class="highlight">9310181962</span>.</p>
             </div>
 
             <div style="display: flex; justify-content: flex-end; margin-top: 1rem;">

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SHUNYA. - Track Order</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css">
+
+    <style>
+        .star-display {
+            color: #FFD700;
+            font-size: 1.25rem;
+            display: inline-flex;
+            gap: 0.25rem;
+            margin-top: 0.25rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Top Navigation -->
+    <nav class="navbar">
+        <a href="index.html" class="logo">SHUNYA.</a>
+        <div class="nav-links">
+            <a href="track.html">Track Order</a>
+            <span class="separator">|</span>
+            <a href="#">About us</a>
+            <span class="separator">|</span>
+            <a href="#">Contact us</a>
+        </div>
+    </nav>
+
+    <main class="main-container center-content" style="padding-top: 2rem;">
+        <h2 style="font-size: 2.5rem; margin-bottom: 2rem;">Track Your Order</h2>
+
+        <div class="product-card" id="login-box" style="width: 100%; max-width: 400px; padding: 2.5rem 2rem;">
+            <p style="margin-bottom: 1.5rem; font-size: 1.1rem; color: var(--text-main); text-align: center;">Enter your
+                tracking details below.</p>
+            <input type="text" id="track-id" placeholder="Tracking ID" class="input-field" required>
+            <input type="password" id="track-pass" placeholder="Password" class="input-field" required>
+            <button class="btn btn-primary" id="track-btn" style="width: 100%; margin-top: 1.5rem; padding: 1rem;">Log
+                In & Track</button>
+            <p id="track-error"
+                style="color: #e74c3c; margin-top: 1rem; display: none; text-align: center; font-weight: 500;">Invalid
+                ID or Password</p>
+        </div>
+
+        <div id="tracked-orders"
+            style="display: none; flex-direction: column; gap: 1.5rem; width: 100%; max-width: 600px;">
+            <!-- Rendered via JS -->
+        </div>
+    </main>
+
+    <script>
+        document.getElementById('track-btn').addEventListener('click', () => {
+            const userId = document.getElementById('track-id').value.trim();
+            const userPass = document.getElementById('track-pass').value.trim();
+            const orders = JSON.parse(localStorage.getItem('orders')) || [];
+
+            const userOrders = orders.filter(o => o.customer && o.customer.userId === userId && o.customer.userPass === userPass);
+
+            if (userOrders.length > 0) {
+                document.getElementById('login-box').style.display = 'none';
+                const container = document.getElementById('tracked-orders');
+                container.style.display = 'flex';
+
+                let html = '<h3 style="font-size: 1.5rem; margin-bottom: 1rem; text-align: center;">Your Orders History:</h3>';
+
+                // Reverse to show newest at the top
+                userOrders.reverse().forEach(order => {
+                    let itemsHtml = '';
+                    for (const [item, qty] of Object.entries(order.items)) {
+                        itemsHtml += `<div style="display: flex; justify-content: space-between; font-size: 1.1rem; margin-bottom: 0.5rem;"><span>${qty}x ${item}</span></div>`;
+                    }
+
+                    let statusLabel = order.status.toUpperCase();
+                    let statusColor = 'var(--text-main)';
+                    let statusBg = 'var(--bg-base)';
+
+                    if (order.status === 'confirmed') {
+                        statusBg = '#f1c40f'; // Yellow warning sort of
+                        statusColor = '#000';
+                    } else if (order.status === 'delivered') {
+                        statusBg = '#2ecc71'; // Green
+                        statusColor = '#fff';
+                    } else {
+                        statusBg = 'var(--text-main)';
+                        statusColor = 'var(--bg-base)';
+                    }
+
+                    html += `
+                        <div class="product-card" style="padding: 2rem;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                                <h4 style="font-size: 1.5rem;">Order #${order.id.slice(-4)}</h4>
+                                <span style="color:var(--text-muted);">${order.time}</span>
+                            </div>
+                            <hr class="divider" style="margin: 1rem 0;">
+                            <div style="margin-bottom: 1rem;">${itemsHtml}</div>
+                            <div style="font-size: 1.25rem;"><strong>Total:</strong> ${order.total}</div>
+                            <div style="margin-top: 1.5rem; padding: 1rem; background: ${statusBg}; color: ${statusColor}; text-align: center; border-radius: 10px; font-weight: bold; font-size: 1.1rem; border: var(--border-width) solid var(--border-color);">
+                                STATUS: ${statusLabel}
+                            </div>
+                        </div>
+                    `;
+                });
+                container.innerHTML = html;
+            } else {
+                document.getElementById('track-error').style.display = 'block';
+            }
+        });
+    </script>
+</body>
+
+</html>

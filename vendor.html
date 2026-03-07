@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SHUNYA. - Vendor Portal</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css">
+
+    <style>
+        .star-display {
+            color: #FFD700;
+            font-size: 1.25rem;
+            display: inline-flex;
+            gap: 0.25rem;
+            margin-top: 0.25rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Top Navigation -->
+    <nav class="navbar">
+        <a href="index.html" class="logo">SHUNYA. Admin</a>
+    </nav>
+
+    <main class="main-container">
+        <h2 style="font-size: 2rem; margin-bottom: 2rem;">Incoming Orders (FCFS)</h2>
+
+        <div id="vendor-dashboard" style="display: flex; flex-direction: column; gap: 1.5rem; max-width: 600px;">
+            <!-- Vendor orders injected here -->
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const dashboard = document.getElementById('vendor-dashboard');
+
+            function renderOrders() {
+                const orders = JSON.parse(localStorage.getItem('orders')) || [];
+
+                if (orders.length === 0) {
+                    dashboard.innerHTML = `
+                        <div class="product-card" style="padding: 2rem; text-align: center;">
+                            <div class="card-info">
+                                <h3 style="color:var(--text-muted); margin-bottom: 0;">No pending orders...</h3>
+                            </div>
+                        </div>`;
+                    return;
+                }
+
+                let html = '';
+
+                // Render list FCFS. So earlier orders at top.
+                orders.forEach(order => {
+                    let itemsHtml = '';
+                    for (const [item, qty] of Object.entries(order.items)) {
+                        itemsHtml += `<div style="display:flex; justify-content:space-between; margin-bottom: 0.5rem; font-size: 1.1rem; color: var(--text-main);"><span>${qty}x ${item}</span></div>`;
+                    }
+
+                    let ratingHtml = '';
+                    if (order.rating) {
+                        let stars = '';
+                        for (let i = 0; i < 5; i++) {
+                            if (i < order.rating) stars += '<i class="ph-fill ph-star"></i>';
+                            else stars += '<i class="ph ph-star"></i>';
+                        }
+                        ratingHtml = `<div class="star-display">${stars}</div>`;
+                    } else if (order.status === 'confirmed') {
+                        ratingHtml = `<div style="color:var(--text-muted); font-size: 0.9rem; margin-top: 0.25rem;">Waiting for user rating...</div>`;
+                    }
+
+                    // Display 'Approve' if pending, otherwise show a confirmed state
+                    let btnHtml = '';
+                    if (order.status === 'pending') {
+                        btnHtml = `<button data-id="${order.id}" class="btn btn-primary approve-btn" style="width:100%; margin-top:0.5rem; font-size: 1.1rem; padding: 1rem;">Approve & Confirm Order</button>`;
+                    } else if (order.status === 'confirmed') {
+                        btnHtml = `<button data-id="${order.id}" class="btn btn-primary deliver-btn" style="width:100%; margin-top:0.5rem; font-size: 1.1rem; padding: 1rem; background: #2ecc71; color: white;">Mark as Delivered</button>`;
+                    } else {
+                        btnHtml = `<div style="width:100%; margin-top:0.5rem; font-size: 1.1rem; padding: 1rem; text-align:center; background: var(--text-main); color: var(--bg-base); border-radius: 15px 255px 15px 225px / 255px 15px 225px 15px;">Order Delivered</div>`;
+                    }
+
+                    let custHtml = '';
+                    if (order.customer) {
+                        custHtml = `
+                        <div style="background: var(--bg-base); padding: 1rem; border-radius: 10px; margin-bottom: 1rem; border: var(--border-width) solid var(--text-muted);">
+                            <div style="font-weight: 600; margin-bottom: 0.25rem;">${order.customer.name} • ${order.customer.phone}</div>
+                            <div style="font-size: 0.9rem; color: var(--text-muted);">${order.customer.address}</div>
+                        </div>`;
+                    }
+
+                    html += `
+                        <div class="product-card" style="display:flex; flex-direction:column; gap: 1.5rem; padding: 2rem; border-color: ${order.status === 'pending' ? 'var(--text-main)' : 'var(--border-color)'};">
+                            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                                <div style="display: flex; flex-direction: column;">
+                                    <h3 style="font-size: 1.5rem; margin-bottom: 0;">Order #${order.id.slice(-4)}</h3>
+                                    ${ratingHtml}
+                                </div>
+                                <span style="color:var(--text-muted); font-size: 1rem; text-align: right;">${order.time}</span>
+                            </div>
+                            <div style="border-top: var(--border-width) solid var(--border-color); border-bottom: var(--border-width) solid var(--border-color); padding: 1.5rem 0;">
+                                ${custHtml}
+                                ${itemsHtml}
+                            </div>
+                            <div style="display:flex; justify-content:space-between; align-items:center; font-size: 1.5rem;">
+                                <strong>Total:</strong>
+                                <strong>${order.total}</strong>
+                            </div>
+                            ${btnHtml}
+                        </div>
+                    `;
+                });
+
+                dashboard.innerHTML = html;
+
+                // Bind approval clicks
+                document.querySelectorAll('.approve-btn').forEach(btn => {
+                    btn.addEventListener('click', function () {
+                        let currentOrders = JSON.parse(localStorage.getItem('orders')) || [];
+                        let id = this.getAttribute('data-id');
+                        let orderIndex = currentOrders.findIndex(o => o.id === id);
+
+                        if (orderIndex !== -1) {
+                            currentOrders[orderIndex].status = 'confirmed';
+                            localStorage.setItem('orders', JSON.stringify(currentOrders));
+                        }
+
+                        this.innerText = 'Order Approved & Confirmed!';
+                        this.style.background = 'var(--text-main)';
+                        this.style.color = 'var(--bg-base)';
+
+                        // Wait a tiny bit for UI then re-render completely
+                        setTimeout(renderOrders, 500);
+                    });
+                });
+
+                // Bind deliver clicks
+                document.querySelectorAll('.deliver-btn').forEach(btn => {
+                    btn.addEventListener('click', function () {
+                        let currentOrders = JSON.parse(localStorage.getItem('orders')) || [];
+                        let id = this.getAttribute('data-id');
+                        let orderIndex = currentOrders.findIndex(o => o.id === id);
+
+                        if (orderIndex !== -1) {
+                            currentOrders[orderIndex].status = 'delivered';
+                            localStorage.setItem('orders', JSON.stringify(currentOrders));
+                        }
+
+                        this.innerText = 'Order Delivered!';
+                        this.style.background = 'var(--text-main)';
+                        this.style.color = 'var(--bg-base)';
+
+                        setTimeout(renderOrders, 500);
+                    });
+                });
+            }
+
+            renderOrders();
+
+            // Refresh periodically to catch new orders and ratings automatically
+            setInterval(renderOrders, 2000);
+        });
+    </script>
+</body>
+
+</html>

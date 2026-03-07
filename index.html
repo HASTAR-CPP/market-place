@@ -24,6 +24,8 @@
     <nav class="navbar">
         <a href="#" class="logo">SHUNYA.</a>
         <div class="nav-links">
+            <a href="track.html">Track Order</a>
+            <span class="separator">|</span>
             <a href="#">About us</a>
             <span class="separator">|</span>
             <a href="#">Contact us</a>
@@ -37,42 +39,57 @@
 
             <!-- Card 1 -->
             <div class="product-card">
-                <img src="https://images.unsplash.com/photo-1612929633738-8fe44f7ec841?q=80&w=800&auto=format&fit=crop"
+                <img src="https://images.unsplash.com/photo-1603033172872-c2525115c7b9?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8bWFnZ2l8ZW58MHx8MHx8fDA%3D"
                     alt="Maggi" class="card-image">
                 <div class="card-info">
-                    <h3>Maggi</h3>
+                    <h3 style="display: flex; justify-content: space-between; align-items: center;">
+                        Maggi <span
+                            style="font-size: 1.25rem; color: var(--text-muted); font-weight: normal;">₹40</span>
+                    </h3>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.25rem;">(Labour charges
+                        included)</p>
                 </div>
                 <div class="card-actions">
-                    <button class="btn btn-outline">Custo</button>
-                    <button class="btn btn-primary">Add</button>
+                    <button class="btn btn-outline">Customize</button>
+                    <button class="btn btn-primary">Add to cart</button>
                 </div>
             </div>
 
             <!-- Card 2 -->
             <div class="product-card">
-                <img src="https://images.unsplash.com/photo-1525351484163-c5290fd85d13?q=80&w=800&auto=format&fit=crop"
+                <img src="https://images.unsplash.com/photo-1760192716247-382af2aa9b35?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fHN1bm55JTIwc2lkZSUyMHVwJTIwZWdnfGVufDB8fDB8fHww"
                     alt="Sunny Side Up" class="card-image">
                 <div class="card-info">
-                    <h3>Sunny side up</h3>
+                    <h3 style="display: flex; justify-content: space-between; align-items: center;">
+                        Sunny side up <span
+                            style="font-size: 1.25rem; color: var(--text-muted); font-weight: normal;">₹20</span>
+                    </h3>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.25rem;">(Labour charges
+                        included)</p>
                 </div>
                 <!-- Replicating sketch: empty box + 'add' -->
                 <div class="card-actions">
-                    <div class="btn btn-outline btn-spacer"></div>
-                    <button class="btn btn-primary">Add</button>
+                    <button class="btn btn-outline">Customize</button>
+                    <button class="btn btn-primary">Add to cart</button>
                 </div>
             </div>
 
             <!-- Card 3 -->
             <div class="product-card">
-                <img src="https://images.unsplash.com/photo-1481070555726-e2fe8357725c?q=80&w=800&auto=format&fit=crop"
+                <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjmPU190weYegGU-VymxkIUDrPgYvgGfFNRZL3e4xhteL9YnG6hWxgyI5hEjOyP0SiYYUPHlubrQbCg_sxDjue7PpvD70yZaprf4nLZKIbsNKNikRs6MWqR-ciGYHuUp0hqnUppvDdR3r8/s1600/bread+omelette2.jpg"
                     alt="Bread Omelette" class="card-image">
                 <div class="card-info">
-                    <h3>Bread omelette</h3>
+                    <h3 style="display: flex; justify-content: space-between; align-items: center;">
+                        Bread omelette <span
+                            style="font-size: 1.25rem; color: var(--text-muted); font-weight: normal;">₹60</span>
+                    </h3>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.25rem;">(Labour charges
+                        included)</p>
                 </div>
                 <!-- Replicating sketch: two empty boxes -->
                 <div class="card-actions">
-                    <div class="btn btn-outline btn-spacer"></div>
-                    <div class="btn btn-primary btn-spacer"></div>
+                    <button class="btn btn-outline">Customize</button>
+                    <button class="btn btn-primary">Add to cart</button>
                 </div>
             </div>
 
@@ -86,6 +103,19 @@
         </div>
 
     </main>
+
+    <!-- Customize Modal -->
+    <div class="payment-modal" id="customize-modal">
+        <div class="modal-content product-card" style="border-radius: 15px 255px 15px 225px / 255px 15px 225px 15px;">
+            <button class="close-modal" id="close-customize-modal">&times;</button>
+            <h2 id="customize-title" style="margin-bottom: 1.5rem; font-size: 2rem;">Customize Dish</h2>
+            <div id="customize-options" class="payment-option" style="margin:0;">
+                <!-- dynamically populated -->
+            </div>
+            <button class="btn btn-primary" id="save-customization" style="margin-top: 1.5rem; width: 100%;">Save
+                Adjustments</button>
+        </div>
+    </div>
 
     <!-- Custom Interactivity -->
     <script src="script.js"></script>
