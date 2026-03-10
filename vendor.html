@@ -43,14 +43,19 @@
         </div>
     </main>
 
-    <script>
+    <script type="module">
+        import { db } from './firebase.js';
+        import { ref, onValue, update } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+
         document.addEventListener('DOMContentLoaded', () => {
             const dashboard = document.getElementById('vendor-dashboard');
 
-            function renderOrders() {
-                const orders = JSON.parse(localStorage.getItem('orders')) || [];
+            // Listen for orders in real-time
+            const ordersRef = ref(db, 'orders');
+            onValue(ordersRef, (snapshot) => {
+                const data = snapshot.val();
 
-                if (orders.length === 0) {
+                if (!data) {
                     dashboard.innerHTML = `
                         <div class="product-card" style="padding: 2rem; text-align: center;">
                             <div class="card-info">
@@ -59,6 +64,12 @@
                         </div>`;
                     return;
                 }
+
+                // Convert object to array for sorting
+                const orders = Object.entries(data).map(([key, val]) => ({
+                    dbKey: key, // Keep Firebase generated key
+                    ...val
+                }));
 
                 let html = '';
 
@@ -84,9 +95,9 @@
                     // Display 'Approve' if pending, otherwise show a confirmed state
                     let btnHtml = '';
                     if (order.status === 'pending') {
-                        btnHtml = `<button data-id="${order.id}" class="btn btn-primary approve-btn" style="width:100%; margin-top:0.5rem; font-size: 1.1rem; padding: 1rem;">Approve & Confirm Order</button>`;
+                        btnHtml = `<button data-key="${order.dbKey}" class="btn btn-primary approve-btn" style="width:100%; margin-top:0.5rem; font-size: 1.1rem; padding: 1rem;">Approve & Confirm Order</button>`;
                     } else if (order.status === 'confirmed') {
-                        btnHtml = `<button data-id="${order.id}" class="btn btn-primary deliver-btn" style="width:100%; margin-top:0.5rem; font-size: 1.1rem; padding: 1rem; background: #2ecc71; color: white;">Mark as Delivered</button>`;
+                        btnHtml = `<button data-key="${order.dbKey}" class="btn btn-primary deliver-btn" style="width:100%; margin-top:0.5rem; font-size: 1.1rem; padding: 1rem; background: #2ecc71; color: white;">Mark as Delivered</button>`;
                     } else {
                         btnHtml = `<div style="width:100%; margin-top:0.5rem; font-size: 1.1rem; padding: 1rem; text-align:center; background: var(--text-main); color: var(--bg-base); border-radius: 15px 255px 15px 225px / 255px 15px 225px 15px;">Order Delivered</div>`;
                     }
@@ -127,49 +138,29 @@
                 // Bind approval clicks
                 document.querySelectorAll('.approve-btn').forEach(btn => {
                     btn.addEventListener('click', function () {
-                        let currentOrders = JSON.parse(localStorage.getItem('orders')) || [];
-                        let id = this.getAttribute('data-id');
-                        let orderIndex = currentOrders.findIndex(o => o.id === id);
-
-                        if (orderIndex !== -1) {
-                            currentOrders[orderIndex].status = 'confirmed';
-                            localStorage.setItem('orders', JSON.stringify(currentOrders));
-                        }
+                        let dbKey = this.getAttribute('data-key');
 
                         this.innerText = 'Order Approved & Confirmed!';
                         this.style.background = 'var(--text-main)';
                         this.style.color = 'var(--bg-base)';
 
-                        // Wait a tiny bit for UI then re-render completely
-                        setTimeout(renderOrders, 500);
+                        update(ref(db, 'orders/' + dbKey), { status: 'confirmed' });
                     });
                 });
 
                 // Bind deliver clicks
                 document.querySelectorAll('.deliver-btn').forEach(btn => {
                     btn.addEventListener('click', function () {
-                        let currentOrders = JSON.parse(localStorage.getItem('orders')) || [];
-                        let id = this.getAttribute('data-id');
-                        let orderIndex = currentOrders.findIndex(o => o.id === id);
-
-                        if (orderIndex !== -1) {
-                            currentOrders[orderIndex].status = 'delivered';
-                            localStorage.setItem('orders', JSON.stringify(currentOrders));
-                        }
+                        let dbKey = this.getAttribute('data-key');
 
                         this.innerText = 'Order Delivered!';
                         this.style.background = 'var(--text-main)';
                         this.style.color = 'var(--bg-base)';
 
-                        setTimeout(renderOrders, 500);
+                        update(ref(db, 'orders/' + dbKey), { status: 'delivered' });
                     });
                 });
-            }
-
-            renderOrders();
-
-            // Refresh periodically to catch new orders and ratings automatically
-            setInterval(renderOrders, 2000);
+            });
         });
     </script>
 </body>

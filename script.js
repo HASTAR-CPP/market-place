@@ -1,9 +1,12 @@
+import { db } from './firebase.js';
+import { ref, push, onValue, update } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+
 document.addEventListener('DOMContentLoaded', () => {
 
     // 0. Global Cart State & Settings
     let cart = JSON.parse(localStorage.getItem('cart')) || {};
     const PRICES = {
-        'Maggi': 40,
+        'Maggi': 50,
         'Sunny side up': 20,
         'Bread omelette': 60
     };
@@ -197,15 +200,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 rating: null
             };
 
-            // FCFS Order List
-            let orders = JSON.parse(localStorage.getItem('orders')) || [];
-            orders.push(newOrder);
-            localStorage.setItem('orders', JSON.stringify(orders));
-            localStorage.setItem('myOrderId', orderId); // Track local customer's id
+            // Push to Firebase
+            const ordersRef = ref(db, 'orders');
+            push(ordersRef, newOrder).then((snapshot) => {
+                // Record the firebase-generated key
+                localStorage.setItem('myOrderId', snapshot.key);
 
-            // Clear cart on checkout
-            localStorage.removeItem('cart');
-            window.location.href = 'success.html';
+                // Clear cart on checkout
+                localStorage.removeItem('cart');
+                window.location.href = 'success.html';
+            }).catch((error) => {
+                alert("Failed to place order. Database error: " + error.message);
+                console.error("Firebase push error:", error);
+            });
         });
     }
 
@@ -308,14 +315,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const myOrderId = localStorage.getItem('myOrderId');
 
     if (waitText && myOrderId) {
-        // Poll for order status to be changed by the vendor page
-        const checkStatus = setInterval(() => {
-            let orders = JSON.parse(localStorage.getItem('orders')) || [];
-            let myOrder = orders.find(o => o.id === myOrderId);
+        // Listen for order status to be changed by the vendor page
+        const orderRef = ref(db, 'orders/' + myOrderId);
+        const unsubscribe = onValue(orderRef, (snapshot) => {
+            let myOrder = snapshot.val();
 
             if (myOrder && (myOrder.status === 'confirmed' || myOrder.status === 'delivered')) {
                 waitText.innerHTML = myOrder.status === 'delivered' ? 'ORDER <span class="highlight">DELIVERED</span>' : 'ORDER <span class="highlight">CONFIRMED</span>';
-                if (myOrder.status === 'confirmed') clearInterval(checkStatus);
 
                 // Show 5-star rating UI if not already present
                 if (!document.getElementById('rating-container')) {
@@ -359,13 +365,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     submitBtn.addEventListener('click', () => {
                         if (selectedRating > 0) {
-                            // Save rating to the centralized FCFS list
-                            let currentOrders = JSON.parse(localStorage.getItem('orders')) || [];
-                            let updatedOrderIndex = currentOrders.findIndex(o => o.id === myOrderId);
-                            if (updatedOrderIndex !== -1) {
-                                currentOrders[updatedOrderIndex].rating = selectedRating;
-                                localStorage.setItem('orders', JSON.stringify(currentOrders));
-                            }
+                            // Update rating in Firebase
+                            update(ref(db, 'orders/' + myOrderId), { rating: selectedRating });
 
                             const p = document.querySelector('#rating-container p');
                             if (p) p.innerText = 'Thank you for your feedback!';
@@ -377,6 +378,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
                 }
             }
-        }, 1000);
+        });
     }
 });

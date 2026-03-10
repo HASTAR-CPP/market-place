@@ -36,9 +36,9 @@
         <div class="nav-links">
             <a href="track.html">Track Order</a>
             <span class="separator">|</span>
-            <a href="#">About us</a>
+            <a href="about.html">About us</a>
             <span class="separator">|</span>
-            <a href="#">Contact us</a>
+            <a href="contact.html">Contact us</a>
         </div>
     </nav>
 
@@ -63,62 +63,81 @@
         </div>
     </main>
 
-    <script>
+    <script type="module">
+        import { db } from './firebase.js';
+        import { ref, onValue } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+
         document.getElementById('track-btn').addEventListener('click', () => {
             const userId = document.getElementById('track-id').value.trim();
             const userPass = document.getElementById('track-pass').value.trim();
-            const orders = JSON.parse(localStorage.getItem('orders')) || [];
 
-            const userOrders = orders.filter(o => o.customer && o.customer.userId === userId && o.customer.userPass === userPass);
+            const ordersRef = ref(db, 'orders');
+            onValue(ordersRef, (snapshot) => {
+                const data = snapshot.val();
+                let userOrders = [];
 
-            if (userOrders.length > 0) {
-                document.getElementById('login-box').style.display = 'none';
-                const container = document.getElementById('tracked-orders');
-                container.style.display = 'flex';
+                if (data) {
+                    const allOrders = Object.entries(data).map(([key, val]) => ({
+                        dbKey: key,
+                        ...val
+                    }));
+                    userOrders = allOrders.filter(o => o.customer && o.customer.userId === userId && o.customer.userPass === userPass);
+                }
 
-                let html = '<h3 style="font-size: 1.5rem; margin-bottom: 1rem; text-align: center;">Your Orders History:</h3>';
+                if (userOrders.length > 0) {
+                    document.getElementById('login-box').style.display = 'none';
+                    const container = document.getElementById('tracked-orders');
+                    container.style.display = 'flex';
 
-                // Reverse to show newest at the top
-                userOrders.reverse().forEach(order => {
-                    let itemsHtml = '';
-                    for (const [item, qty] of Object.entries(order.items)) {
-                        itemsHtml += `<div style="display: flex; justify-content: space-between; font-size: 1.1rem; margin-bottom: 0.5rem;"><span>${qty}x ${item}</span></div>`;
-                    }
+                    let html = '<h3 style="font-size: 1.5rem; margin-bottom: 1rem; text-align: center;">Your Orders History:</h3>';
 
-                    let statusLabel = order.status.toUpperCase();
-                    let statusColor = 'var(--text-main)';
-                    let statusBg = 'var(--bg-base)';
+                    // Reverse to show newest at the top
+                    userOrders.reverse().forEach(order => {
+                        let itemsHtml = '';
+                        for (const [item, qty] of Object.entries(order.items)) {
+                            itemsHtml += `<div style="display: flex; justify-content: space-between; font-size: 1.1rem; margin-bottom: 0.5rem;"><span>${qty}x ${item}</span></div>`;
+                        }
 
-                    if (order.status === 'confirmed') {
-                        statusBg = '#f1c40f'; // Yellow warning sort of
-                        statusColor = '#000';
-                    } else if (order.status === 'delivered') {
-                        statusBg = '#2ecc71'; // Green
-                        statusColor = '#fff';
-                    } else {
-                        statusBg = 'var(--text-main)';
-                        statusColor = 'var(--bg-base)';
-                    }
+                        let statusLabel = order.status.toUpperCase();
+                        let statusColor = 'var(--text-main)';
+                        let statusBg = 'var(--bg-base)';
 
-                    html += `
-                        <div class="product-card" style="padding: 2rem;">
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-                                <h4 style="font-size: 1.5rem;">Order #${order.id.slice(-4)}</h4>
-                                <span style="color:var(--text-muted);">${order.time}</span>
+                        if (order.status === 'confirmed') {
+                            statusBg = '#f1c40f'; // Yellow warning sort of
+                            statusColor = '#000';
+                        } else if (order.status === 'delivered') {
+                            statusBg = '#2ecc71'; // Green
+                            statusColor = '#fff';
+                        } else {
+                            statusBg = 'var(--text-main)';
+                            statusColor = 'var(--bg-base)';
+                        }
+
+                        html += `
+                            <div class="product-card" style="padding: 2rem;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                                    <h4 style="font-size: 1.5rem;">Order #${order.id.slice(-4)}</h4>
+                                    <span style="color:var(--text-muted);">${order.time}</span>
+                                </div>
+                                <hr class="divider" style="margin: 1rem 0;">
+                                <div style="margin-bottom: 1rem;">${itemsHtml}</div>
+                                <div style="font-size: 1.25rem;"><strong>Total:</strong> ${order.total}</div>
+                                <div style="margin-top: 1.5rem; padding: 1rem; background: ${statusBg}; color: ${statusColor}; text-align: center; border-radius: 10px; font-weight: bold; font-size: 1.1rem; border: var(--border-width) solid var(--border-color);">
+                                    STATUS: ${statusLabel}
+                                </div>
                             </div>
-                            <hr class="divider" style="margin: 1rem 0;">
-                            <div style="margin-bottom: 1rem;">${itemsHtml}</div>
-                            <div style="font-size: 1.25rem;"><strong>Total:</strong> ${order.total}</div>
-                            <div style="margin-top: 1.5rem; padding: 1rem; background: ${statusBg}; color: ${statusColor}; text-align: center; border-radius: 10px; font-weight: bold; font-size: 1.1rem; border: var(--border-width) solid var(--border-color);">
-                                STATUS: ${statusLabel}
-                            </div>
-                        </div>
-                    `;
-                });
-                container.innerHTML = html;
-            } else {
-                document.getElementById('track-error').style.display = 'block';
-            }
+                        `;
+                    });
+                    container.innerHTML = html;
+                } else {
+                    document.getElementById('track-error').innerText = 'Invalid ID or Password';
+                    document.getElementById('track-error').style.display = 'block';
+                }
+            }, (error) => {
+                const errorEl = document.getElementById('track-error');
+                errorEl.innerText = "Database Error: " + error.message;
+                errorEl.style.display = 'block';
+            });
         });
     </script>
 </body>
