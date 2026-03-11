@@ -32,18 +32,20 @@
             style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #856404;">&times;</button>
     </div>
     <script>
+        // Track whether the page has fully loaded
+        let isPageLoaded = false;
+        
+        window.addEventListener('load', () => {
+            isPageLoaded = true;
+            document.getElementById('slow-load-banner').style.display = 'none';
+        });
+
         // Display the message if the page hasn't finished loading in 4 seconds
-        const slowLoadTimer = setTimeout(() => {
-            if (document.readyState !== 'complete') {
+        setTimeout(() => {
+            if (!isPageLoaded) {
                 document.getElementById('slow-load-banner').style.display = 'block';
             }
         }, 4000);
-
-        // Hide message when fully loaded and clear the timer
-        window.addEventListener('load', () => {
-            clearTimeout(slowLoadTimer);
-            document.getElementById('slow-load-banner').style.display = 'none';
-        });
     </script>
 
     <!-- Top Navigation -->

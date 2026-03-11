@@ -1,5 +1,5 @@
 import { db } from './firebase.js';
-import { ref, push, onValue, update } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+import { ref, push, onValue, update, runTransaction, set } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
 
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -200,18 +200,35 @@ document.addEventListener('DOMContentLoaded', () => {
                 rating: null
             };
 
-            // Push to Firebase
-            const ordersRef = ref(db, 'orders');
-            push(ordersRef, newOrder).then((snapshot) => {
-                // Record the firebase-generated key
-                localStorage.setItem('myOrderId', snapshot.key);
+            // Generate Sequential Order ID and Push to Firebase
+            const counterRef = ref(db, 'counters/orderId');
+            
+            runTransaction(counterRef, (currentValue) => {
+                // If the counter doesn't exist yet, start at 1
+                return (currentValue || 0) + 1;
+            }).then((transactionResult) => {
+                if (transactionResult.committed) {
+                    const newOrderId = transactionResult.snapshot.val();
+                    
+                    // Add the sequential ID directly to the order object for easier reference
+                    newOrder.orderId = newOrderId;
+                    
+                    // Save the new order under the sequential ID
+                    const newOrderRef = ref(db, 'orders/' + newOrderId);
+                    return set(newOrderRef, newOrder).then(() => {
+                        // Record the generated sequential ID
+                        localStorage.setItem('myOrderId', newOrderId);
 
-                // Clear cart on checkout
-                localStorage.removeItem('cart');
-                window.location.href = 'success.html';
+                        // Clear cart on checkout
+                        localStorage.removeItem('cart');
+                        window.location.href = 'success.html';
+                    });
+                } else {
+                    throw new Error("Transaction not committed.");
+                }
             }).catch((error) => {
                 alert("Failed to place order. Database error: " + error.message);
-                console.error("Firebase push error:", error);
+                console.error("Firebase order placement error:", error);
             });
         });
     }

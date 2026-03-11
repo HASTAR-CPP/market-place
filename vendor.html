@@ -115,7 +115,7 @@
                         <div class="product-card" style="display:flex; flex-direction:column; gap: 1.5rem; padding: 2rem; border-color: ${order.status === 'pending' ? 'var(--text-main)' : 'var(--border-color)'};">
                             <div style="display:flex; justify-content:space-between; align-items:flex-start;">
                                 <div style="display: flex; flex-direction: column;">
-                                    <h3 style="font-size: 1.5rem; margin-bottom: 0;">Order #${order.id.slice(-4)}</h3>
+                                    <h3 style="font-size: 1.5rem; margin-bottom: 0;">Order #${order.dbKey}</h3>
                                     ${ratingHtml}
                                 </div>
                                 <span style="color:var(--text-muted); font-size: 1rem; text-align: right;">${order.time}</span>
