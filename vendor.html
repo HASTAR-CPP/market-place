@@ -82,12 +82,31 @@
 
                     let ratingHtml = '';
                     if (order.rating) {
-                        let stars = '';
-                        for (let i = 0; i < 5; i++) {
-                            if (i < order.rating) stars += '<i class="ph-fill ph-star"></i>';
-                            else stars += '<i class="ph ph-star"></i>';
+                        if (typeof order.rating === 'object') {
+                            let dStars = '';
+                            let fStars = '';
+                            for (let i = 0; i < 5; i++) {
+                                dStars += (i < order.rating.delivery) ? '<i class="ph-fill ph-star"></i>' : '<i class="ph ph-star"></i>';
+                                fStars += (i < order.rating.food) ? '<i class="ph-fill ph-star"></i>' : '<i class="ph ph-star"></i>';
+                            }
+                            ratingHtml = `
+                                <div style="display:flex; flex-direction:column; gap:0.25rem; margin-top:0.5rem;">
+                                    <div style="font-size: 0.95rem; color: var(--text-muted); display:flex; align-items:center; gap:0.5rem;">
+                                        <span style="min-width: 60px;">Delivery</span> <div class="star-display" style="margin:0; font-size:1.1rem;">${dStars}</div>
+                                    </div>
+                                    <div style="font-size: 0.95rem; color: var(--text-muted); display:flex; align-items:center; gap:0.5rem;">
+                                        <span style="min-width: 60px;">Food</span> <div class="star-display" style="margin:0; font-size:1.1rem;">${fStars}</div>
+                                    </div>
+                                </div>
+                            `;
+                        } else {
+                            let stars = '';
+                            for (let i = 0; i < 5; i++) {
+                                if (i < order.rating) stars += '<i class="ph-fill ph-star"></i>';
+                                else stars += '<i class="ph ph-star"></i>';
+                            }
+                            ratingHtml = `<div class="star-display">${stars}</div>`;
                         }
-                        ratingHtml = `<div class="star-display">${stars}</div>`;
                     } else if (order.status === 'confirmed') {
                         ratingHtml = `<div style="color:var(--text-muted); font-size: 0.9rem; margin-top: 0.25rem;">Waiting for user rating...</div>`;
                     }

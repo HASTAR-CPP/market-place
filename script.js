@@ -340,32 +340,59 @@ document.addEventListener('DOMContentLoaded', () => {
             if (myOrder && (myOrder.status === 'confirmed' || myOrder.status === 'delivered')) {
                 waitText.innerHTML = myOrder.status === 'delivered' ? 'ORDER <span class="highlight">DELIVERED</span>' : 'ORDER <span class="highlight">CONFIRMED</span>';
 
-                // Show 5-star rating UI if not already present
+                // Show dual 5-star rating UI if not already present
                 if (!document.getElementById('rating-container')) {
                     const ratingHtml = `
-                        <div id="rating-container" style="margin-top: 3rem; display: flex; flex-direction: column; align-items: center; gap: 1rem;">
-                            <p style="font-size: 1.5rem;">Rate your experience!</p>
-                            <div class="stars" style="display: flex; gap: 0.5rem; font-size: 2.5rem; cursor: pointer;">
-                                <i class="ph ph-star" data-val="1"></i>
-                                <i class="ph ph-star" data-val="2"></i>
-                                <i class="ph ph-star" data-val="3"></i>
-                                <i class="ph ph-star" data-val="4"></i>
-                                <i class="ph ph-star" data-val="5"></i>
+                        <div id="rating-container" style="margin-top: 3rem; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; width: 100%; max-width: 400px; margin-left: auto; margin-right: auto;">
+                            <p style="font-size: 1.5rem; margin-bottom: 0;">Rate your experience!</p>
+                            
+                            <!-- Delivery Rating -->
+                            <div style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem; width: 100%;">
+                                <span style="font-size: 1.1rem; color: var(--text-muted);">Delivery Experience</span>
+                                <div class="stars delivery-stars" style="display: flex; gap: 0.5rem; font-size: 2.5rem; cursor: pointer;">
+                                    <i class="ph ph-star" data-val="1"></i>
+                                    <i class="ph ph-star" data-val="2"></i>
+                                    <i class="ph ph-star" data-val="3"></i>
+                                    <i class="ph ph-star" data-val="4"></i>
+                                    <i class="ph ph-star" data-val="5"></i>
+                                </div>
                             </div>
-                            <button id="submit-feedback" class="btn btn-outline" style="margin-top: 1rem; display: none;">Submit Feedback</button>
+
+                            <!-- Food Quality Rating -->
+                            <div style="display: flex; flex-direction: column; align-items: center; gap: 0.5rem; width: 100%;">
+                                <span style="font-size: 1.1rem; color: var(--text-muted);">Food Quality</span>
+                                <div class="stars food-stars" style="display: flex; gap: 0.5rem; font-size: 2.5rem; cursor: pointer;">
+                                    <i class="ph ph-star" data-val="1"></i>
+                                    <i class="ph ph-star" data-val="2"></i>
+                                    <i class="ph ph-star" data-val="3"></i>
+                                    <i class="ph ph-star" data-val="4"></i>
+                                    <i class="ph ph-star" data-val="5"></i>
+                                </div>
+                            </div>
+
+                            <button id="submit-feedback" class="btn btn-outline" style="margin-top: 1rem; display: none; width: 100%;">Submit Feedback</button>
                         </div>
                     `;
                     waitText.insertAdjacentHTML('afterend', ratingHtml);
 
-                    let selectedRating = 0;
-                    const stars = document.querySelectorAll('.stars i');
+                    let deliveryRating = 0;
+                    let foodRating = 0;
+                    
+                    const deliveryStars = document.querySelectorAll('.delivery-stars i');
+                    const foodStars = document.querySelectorAll('.food-stars i');
                     const submitBtn = document.getElementById('submit-feedback');
 
-                    stars.forEach(star => {
+                    function checkShowSubmit() {
+                        if (deliveryRating > 0 && foodRating > 0) {
+                            submitBtn.style.display = 'block';
+                        }
+                    }
+
+                    deliveryStars.forEach(star => {
                         star.addEventListener('click', (e) => {
-                            selectedRating = parseInt(e.target.getAttribute('data-val'));
-                            stars.forEach(s => {
-                                if (parseInt(s.getAttribute('data-val')) <= selectedRating) {
+                            deliveryRating = parseInt(e.target.getAttribute('data-val'));
+                            deliveryStars.forEach(s => {
+                                if (parseInt(s.getAttribute('data-val')) <= deliveryRating) {
                                     s.classList.remove('ph');
                                     s.classList.add('ph-fill');
                                     s.style.color = '#FFD700';
@@ -375,21 +402,38 @@ document.addEventListener('DOMContentLoaded', () => {
                                     s.style.color = '';
                                 }
                             });
-                            // Show the submit button once they pick a star rating
-                            submitBtn.style.display = 'inline-block';
+                            checkShowSubmit();
+                        });
+                    });
+
+                    foodStars.forEach(star => {
+                        star.addEventListener('click', (e) => {
+                            foodRating = parseInt(e.target.getAttribute('data-val'));
+                            foodStars.forEach(s => {
+                                if (parseInt(s.getAttribute('data-val')) <= foodRating) {
+                                    s.classList.remove('ph');
+                                    s.classList.add('ph-fill');
+                                    s.style.color = '#FFD700';
+                                } else {
+                                    s.classList.remove('ph-fill');
+                                    s.classList.add('ph');
+                                    s.style.color = '';
+                                }
+                            });
+                            checkShowSubmit();
                         });
                     });
 
                     submitBtn.addEventListener('click', () => {
-                        if (selectedRating > 0) {
-                            // Update rating in Firebase
-                            update(ref(db, 'orders/' + myOrderId), { rating: selectedRating });
+                        if (deliveryRating > 0 && foodRating > 0) {
+                            // Update rating in Firebase as an object
+                            update(ref(db, 'orders/' + myOrderId), { rating: { delivery: deliveryRating, food: foodRating } });
 
                             const p = document.querySelector('#rating-container p');
                             if (p) p.innerText = 'Thank you for your feedback!';
 
                             // Keep display but lock changes
-                            document.querySelector('.stars').style.pointerEvents = 'none';
+                            document.querySelectorAll('.stars').forEach(el => el.style.pointerEvents = 'none');
                             submitBtn.remove();
                         }
                     });

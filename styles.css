@@ -28,6 +28,7 @@ body {
     overflow-x: hidden;
     position: relative;
     font-size: 18px;
+    padding-top: 90px; /* Offset for fixed navbar */
 }
 
 /* --- Navigation --- */
@@ -37,8 +38,10 @@ body {
     align-items: center;
     padding: 1.5rem 6vw;
     border-bottom: var(--border-width) solid var(--border-color);
-    position: sticky;
+    position: fixed;
     top: 0;
+    left: 0;
+    width: 100%;
     z-index: 100;
     background: var(--bg-base);
 }
